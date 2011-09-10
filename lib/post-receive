@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+
+from tfs import TfsClientService
+import git, re
+
+class TFSGitHook(object):
+    authors = set()
+    item_ids = set()
+    
+    def __init__(self, revisions, config):
+        self.client = TfsClientService(config['host'], config['username'], config['password'], None, None)
+        self.processHistory(revisions)
+        
+    def processHistory(self, revisions):
+        bugRegex = re.compile(r'#([0-9]+)')
+        
+        for revision in revisions:
+            self.authors.add(revision["name"])
+            
+            matches = bugRegex.findall(revision["message"])
+            
+            if matches is None:
+                continue
+            
+            for id in matches:
+                self.item_ids.add(id)
+        
+        
+    def getWorkItem(self, id):
+        result = self.client.getWorkItem(id)
+        if result:        
+            revision = result['System.Rev']
+            state = result['System.State']
+            if revision and state:
+                return int(revision), state    
+        return None, None
+        
+    def addComment(self, comment):
+        for id in self.item_ids:        
+            (revision, state) = self.getWorkItem(id)
+            authors = ', '.join(self.authors) 
+            
+            if revision != None:
+                self.client.addWorkItemComment(id, revision, "{0}: {1}".format(authors, comment))
+    
+    def changeStatus(self, id, state):
+        (revision, state) = self.getWorkItem(id)
+        
+        if state != state:
+            self.client.addWorkItemComment(id, revision, comment)
+    
+if __name__ == '__main__':
+    for line in sys.stdin.xreadlines():
+        old, new, ref = line.strip().split(' ')
+        revisions = get_revisions(old, new)
+        
+        config = { 
+            'host': "http://localhost:8080", 
+            'username' : "", 
+            'password': ""
+        }
+        
+        tfs = TFSGitHook(revisions, config)
+        tfs.addComment("Fixed in revision {}.".format(new))
