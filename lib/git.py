@@ -20,35 +20,35 @@ def get_revisions(old, new):
     revisions = []
     s = 0
     while s < len(sections):
-    lines = sections[s].split('\n')
-
-    # first line is 'commit HASH\n'
-    props = {'id': lines[0].strip().split(' ')[1]}
-
-    # read the header
-    for l in lines[1:]:
-        key, val = l.split(' ', 1)
-        props[key[:-1].lower()] = val.strip()
-
-    # read the commit message
-    props['message'] = sections[s+1].strip()
-
-    # use github time format
-    basetime = datetime.strptime(props['date'][:-6], "%a %b %d %H:%M:%S %Y")
-    tzstr = props['date'][-5:]
-    props['date'] = basetime.strftime('%Y-%m-%dT%H:%M:%S') + tzstr
-
-    # split up author
-    m = EMAIL_RE.match(props['author'])
-    if m:
-        props['name'] = m.group(1)
-        props['email'] = m.group(2)
-    else:
-        props['name'] = 'unknown'
-        props['email'] = 'unknown'
-    del props['author']
-
-    s += 2
-    revisions.append(props)
+        lines = sections[s].split('\n')
+        
+        # first line is 'commit HASH\n'
+        props = {'id': lines[0].strip().split(' ')[1]}
+        
+        # read the header
+        for l in lines[1:]:
+            key, val = l.split(' ', 1)
+            props[key[:-1].lower()] = val.strip()
+        
+        # read the commit message
+        props['message'] = sections[s+1].strip()
+        
+        # use github time format
+        basetime = datetime.strptime(props['date'][:-6], "%a %b %d %H:%M:%S %Y")
+        tzstr = props['date'][-5:]
+        props['date'] = basetime.strftime('%Y-%m-%dT%H:%M:%S') + tzstr
+        
+        # split up author
+        m = EMAIL_RE.match(props['author'])
+        if m:
+            props['name'] = m.group(1)
+            props['email'] = m.group(2)
+        else:
+            props['name'] = 'unknown'
+            props['email'] = 'unknown'
+        del props['author']
+        
+        s += 2
+        revisions.append(props)
 
     return revisions
