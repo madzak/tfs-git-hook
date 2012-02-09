@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from tfs import TfsClientService
-import git, re
+import git, re, sys
 
 class TFSGitHook(object):
     authors = set()
@@ -43,16 +43,10 @@ class TFSGitHook(object):
             if revision != None:
                 self.client.addWorkItemComment(id, revision, "{0}: {1}".format(authors, comment))
     
-    def changeStatus(self, id, state):
-        (revision, state) = self.getWorkItem(id)
-        
-        if state != state:
-            self.client.addWorkItemComment(id, revision, comment)
-    
 if __name__ == '__main__':
     for line in sys.stdin.xreadlines():
         old, new, ref = line.strip().split(' ')
-        revisions = get_revisions(old, new)
+        revisions = git.get_revisions(old, new)
         
         config = { 
             'host': "http://localhost:8080", 

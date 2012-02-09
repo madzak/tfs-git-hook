@@ -13,6 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from datetime import datetime
+import subprocess, re
+
+EMAIL_RE = re.compile("^(.*) <(.*)>$")
+
 def get_revisions(old, new):
     git = subprocess.Popen([r"git", 'rev-list', '--pretty=medium', r'%s..%s' % (old, new)], stdout=subprocess.PIPE)
     sections = git.stdout.read().split('\n\n')[:-1]

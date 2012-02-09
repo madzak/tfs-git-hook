@@ -6,12 +6,8 @@
 #
 
 from ntlm import HTTPNtlmAuthHandler
-from xml.sax.saxutils import escape
 import xml.etree.ElementTree as et
-from datetime import datetime
-import re, httplib, uuid, urllib2, urlparse, subprocess, sys
-
-EMAIL_RE = re.compile("^(.*) <(.*)>$")
+import uuid, urllib2, urlparse
 
 # Adapted From:
 # Copyright (c) Matt Hawley, http://hgtfshook.codeplex.com
