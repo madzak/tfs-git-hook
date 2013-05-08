@@ -1,4 +1,4 @@
-#
+# Adapted From:
 # Copyright (c) Matt Hawley, http://hgtfshook.codeplex.com
 #
 # This software may be used and distributed under the
@@ -9,12 +9,7 @@ from ntlm import HTTPNtlmAuthHandler
 import xml.etree.ElementTree as et
 import uuid, urllib2, urlparse
 
-# Adapted From:
-# Copyright (c) Matt Hawley, http://hgtfshook.codeplex.com
-#
-# This software may be used and distributed under the
-# Microsoft Public License (Ms-PL).
-#
+
 class SoapService:
     NS_SOAP_ENV = "{http://schemas.xmlsoap.org/soap/envelope/}"
     NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
